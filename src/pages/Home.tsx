@@ -1,4 +1,7 @@
 import { useNavigate } from "react-router-dom";
+import { FormEvent, useState } from "react";
+
+import { database } from "../services/firebase";
 
 import illustrationImg from "../assets/images/illustration.svg";
 import logoImg from "../assets/images/logo.svg";
@@ -11,14 +14,25 @@ import { useAuth } from "../Hooks/useAuth";
 export function Home() {
     const navigate = useNavigate();
     const {user, signInWithGoogle } = useAuth();
-
+    const [roomCode, setRoomCode] = useState('');
     async function handleCreateRoom(){
         if (!user) {
             await signInWithGoogle();
         }
         navigate('/rooms/new');
     };
+   async function handleJoinRoom(event: FormEvent) {
+        event.preventDefault();
+        if (roomCode.trim()===''){
+            return;
+        }
+        const roomRef = await database.ref(`rooms/${roomCode}`).get();
+        if (!roomRef.exists()){
+             return alert('Room does not exists.');
 
+        }
+        navigate(`/rooms/${roomCode}`)
+   }
     return (
         <div id="page-auth">
             <aside>
@@ -34,9 +48,11 @@ export function Home() {
                         Crie sua sala
                     </button>
                     <div className="separator">Ou entre em uma sala</div>
-                    <form action="">
+                    <form onSubmit={handleJoinRoom} action="">
                         <input type="text" 
                         placeholder="Digite o codigo da sala"
+                        onChange={event => setRoomCode(event.target.value)}
+                        value={roomCode}
                         />
                         <Button type="submit"> Entrar na sala</Button>
                     </form>
