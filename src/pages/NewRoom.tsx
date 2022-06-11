@@ -9,13 +9,15 @@ import logoImg from "../assets/images/logo.svg";
 import "../styles/auth.scss"
 
 import { Button } from "../components/Button";
-import { useAuth } from "../Hooks/useAuth";
+import { useAuth } from "../hooks/useAuth";
 
 export function NewRoom() {
     const { user } = useAuth();
-    const navigate = useNavigate()
     const [newRoom, setNewRoom] = useState('');
+    const navigate = useNavigate();
+
     async function handleCreateRoom (event: FormEvent){
+
         event.preventDefault();
         if (newRoom.trim()===''){
             return;

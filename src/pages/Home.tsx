@@ -9,7 +9,7 @@ import googleImg from "../assets/images/google-icon.svg";
 import "../styles/auth.scss"
 
 import { Button } from "../components/Button";
-import { useAuth } from "../Hooks/useAuth";
+import { useAuth } from "../hooks/useAuth";
 
 export function Home() {
     const navigate = useNavigate();
@@ -29,7 +29,9 @@ export function Home() {
         const roomRef = await database.ref(`rooms/${roomCode}`).get();
         if (!roomRef.exists()){
              return alert('Room does not exists.');
-
+        }
+        if (roomRef.val().endedAt){
+            return alert('Room already closed');
         }
         navigate(`/rooms/${roomCode}`)
    }
